@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تريكس | TRIX - حاسبة تريكس</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui,Tahoma}
+body{background:#0f172a;color:#fff;margin:0;padding:14px}
+.card{background:#1e293b;border-radius:18px;padding:16px;max-width:560px;margin:auto}
+.logo{width:82%;max-width:380px;height:auto;display:block;border-radius:14px;margin:0 auto 8px}
+p.sub{text-align:center;color:#94a3b8;font-size:13px;margin:0 0 12px}
+.score{display:flex;gap:10px}
+.team{flex:1;background:#0f172a;border:2px solid #334155;border-radius:14px;padding:12px;text-align:center}
+.team.hna{border-color:#22c55e}.team.hum{border-color:#f59e0b}
+.team b{font-size:26px;display:block}
+.btn{width:100%;padding:14px;border:0;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;margin-top:8px}
+.btn-green{background:#22c55e;color:#000}.btn-dark{background:#334155;color:#fff}.btn-red{background:#ef4444;color:#fff}.btn-orange{background:#f59e0b;color:#000}
+input,select{width:100%;padding:12px;border-radius:10px;border:0;background:#fff;color:#000;font-size:16px;margin:6px 0}
+label{font-size:14px;color:#cbd5e1}
+.item{background:#0f172a;border-radius:12px;padding:10px;margin-bottom:8px;font-size:14px;line-height:1.7}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;background:#22c55e;color:#000;font-weight:700}
+.mini{padding:6px 10px;border-radius:8px;border:0;font-weight:700;cursor:pointer;font-size:13px;margin-left:4px}
+.mini-edit{background:#f59e0b;color:#000}.mini-del{background:#ef4444;color:#fff}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:#1e293b;width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow:auto}
+.games{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.games button{padding:16px 5px;border-radius:14px;border:2px solid #475569;background:#0f172a;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+.games button.active{border-color:#22c55e;background:#14532d}
+.games button.used{opacity:.25;text-decoration:line-through;pointer-events:none}
+.choice{display:flex;gap:10px}
+.choice button{flex:1;padding:13px;border-radius:12px;border:2px solid #475569;background:#0f172a;color:#fff;font-size:16px;font-weight:800}
+.choice button.active{border-color:#22c55e;background:#14532d}
+.box{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:12px;margin-top:10px}
+.hidden{display:none}
+.rank{display:flex;align-items:center;gap:8px;margin:6px 0}
+.rank span{width:95px;font-size:14px}
+.rank select{margin:0}
+</style>
+</head>
+<body>
+<div class="card">
+<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4b8"/><stop offset=".3" stop-color="#f5c542"/><stop offset=".55" stop-color="#c8921a"/><stop offset=".8" stop-color="#7a5200"/><stop offset="1" stop-color="#3d2900"/></linearGradient>
+    <linearGradient id="goldText" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c4"/><stop offset=".4" stop-color="#f2c14e"/><stop offset=".6" stop-color="#a8740c"/><stop offset="1" stop-color="#4a3200"/></linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></linearGradient>
+    <radialGradient id="ruby" gradientUnits="userSpaceOnUse" cx="-3.5" cy="-4.5" r="15"><stop offset="0" stop-color="#ffc2c2"/><stop offset=".25" stop-color="#ff2a2a"/><stop offset=".6" stop-color="#a30000"/><stop offset="1" stop-color="#2a0000"/></radialGradient>
+    <radialGradient id="onyx" gradientUnits="userSpaceOnUse" cx="-3.5" cy="-4.5" r="15"><stop offset="0" stop-color="#b5b5b5"/><stop offset=".25" stop-color="#3a3a3a"/><stop offset=".65" stop-color="#0d0d0d"/><stop offset="1" stop-color="#000"/></radialGradient>
+    <linearGradient id="bezel" gradientUnits="userSpaceOnUse" x1="0" y1="-10" x2="0" y2="10"><stop offset="0" stop-color="#fff4b8"/><stop offset=".45" stop-color="#e0a92a"/><stop offset="1" stop-color="#5a3c00"/></linearGradient>
+    <path id="heartP" d="M0 9 C-2 6 -10 1 -10 -4 C-10 -8 -7 -10 -4.5 -10 C-2.5 -10 -.8 -8.8 0 -7 C.8 -8.8 2.5 -10 4.5 -10 C7 -10 10 -8 10 -4 C10 1 2 6 0 9 Z"/>
+    <path id="spadeP" d="M0 -10 C-2 -6.5 -10 -2.5 -10 2.5 C-10 5.5 -7.8 7.2 -5.5 7.2 C-3.6 7.2 -2 6.2 -1.2 4.8 C-1.3 7 -2.4 8.8 -4 10 H4 C2.4 8.8 1.3 7 1.2 4.8 C2 6.2 3.6 7.2 5.5 7.2 C7.8 7.2 10 5.5 10 2.5 C10 -2.5 2 -6.5 0 -10 Z"/>
+    <g id="clubG"><circle cx="0" cy="-5" r="4.6"/><circle cx="-5.2" cy="1.6" r="4.6"/><circle cx="5.2" cy="1.6" r="4.6"/><circle cx="0" cy="0" r="2.6"/><path d="M-1.2 1.5 C-1.3 6 -2.6 8.6 -4.4 10 H4.4 C2.6 8.6 1.3 6 1.2 1.5 Z"/></g>
+    <path id="diamondP" d="M0 -10 Q3.2 -4.2 7 0 Q3.2 4.2 0 10 Q-3.2 4.2 -7 0 Q-3.2 -4.2 0 -10 Z"/>
+    <path id="sparkle" d="M0 -3 L.6 -.6 L3 0 L.6 .6 L0 3 L-.6 .6 L-3 0 L-.6 -.6 Z" fill="#fff"/>
+    <g id="diamondGem"><use href="#diamondP" fill="none" stroke="#1a1000" stroke-width="4.4" stroke-linejoin="round"/><use href="#diamondP" fill="none" stroke="url(#bezel)" stroke-width="2.8" stroke-linejoin="round"/><use href="#diamondP" fill="url(#ruby)"/><path d="M0 -10 Q-3.2 -4.2 -7 0 L0 0 Z" fill="#fff" opacity=".35"/><path d="M0 -10 Q3.2 -4.2 7 0 L0 0 Z" fill="#fff" opacity=".12"/><path d="M0 10 Q-3.2 4.2 -7 0 L0 0 Z" fill="#000" opacity=".15"/><path d="M0 10 Q3.2 4.2 7 0 L0 0 Z" fill="#000" opacity=".4"/><path d="M0 -4.5 L2.6 0 L0 4.5 L-2.6 0 Z" fill="#ff0000" opacity=".55"/><path d="M0 -10 V10 M-7 0 H7" stroke="#fff" stroke-opacity=".25" stroke-width=".5"/><use href="#sparkle" transform="translate(-2.2 -4) scale(.8)"/></g>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2.5" flood-color="#9e0000" flood-opacity=".85"/></filter>
+  </defs>
+  <rect width="560" height="200" rx="18" fill="#000"/>
+  <g fill="none" stroke="url(#gold)" stroke-linejoin="round" filter="url(#shadow)"><path d="M42 24 H518 L536 42 V158 L518 176 H42 L24 158 V42 Z" stroke-width="2.5"/><path d="M12 56 V32 L32 12 H120" stroke-width="2"/><path d="M548 56 V32 L528 12 H440" stroke-width="2"/><path d="M12 144 V168 L32 188 H120" stroke-width="2"/><path d="M548 144 V168 L528 188 H440" stroke-width="2"/><path d="M14 84 V116 M548 84 V116" stroke-width="3"/><path d="M200 12 H360 M200 188 H360" stroke-width="1" stroke-opacity=".6"/></g>
+  <g filter="url(#shadow)" transform="translate(280 36) scale(.82) translate(-280 -12)"><path d="M234 74 L228 38 L248 56 L256 30 L268 54 L280 20 L292 54 L304 30 L312 56 L332 38 L326 74 Z" fill="url(#gold)" stroke="#1a1000" stroke-width="1.5" stroke-linejoin="round"/><path d="M234 74 L228 38 L248 56 L256 30 L268 54 L280 20 L292 54 L304 30 L312 56 L332 38 L326 74 Z" fill="url(#shade)"/><path d="M280 24 L284 54 L280 66 L276 54 Z" fill="#fff4b8" opacity=".5"/><g fill="url(#gold)" stroke="#1a1000" stroke-width="1.2"><circle cx="228" cy="36" r="4.5"/><circle cx="256" cy="28" r="4.5"/><circle cx="280" cy="17" r="5"/><circle cx="304" cy="28" r="4.5"/><circle cx="332" cy="36" r="4.5"/></g><rect x="226" y="70" width="108" height="26" rx="3" fill="url(#gold)" stroke="#1a1000" stroke-width="1.5"/><rect x="226" y="70" width="108" height="26" rx="3" fill="url(#shade)"/><line x1="228" y1="73" x2="332" y2="73" stroke="#fff4b8" stroke-opacity=".6"/><line x1="228" y1="93" x2="332" y2="93" stroke="#000" stroke-opacity=".5"/><g transform="translate(241 83) scale(.85)"><use href="#spadeP" fill="none" stroke="#1a1000" stroke-width="4.4" stroke-linejoin="round"/><use href="#spadeP" fill="none" stroke="url(#bezel)" stroke-width="2.8" stroke-linejoin="round"/><use href="#spadeP" fill="url(#onyx)"/><path d="M0 -10 C-2 -6.5 -10 -2.5 -10 2.5 L0 1 Z" fill="#fff" opacity=".08"/><ellipse cx="-5" cy="0" rx="2.4" ry="1.2" transform="rotate(-40 -5 0)" fill="#fff" opacity=".7"/><circle cx="-2.6" cy="-3.4" r=".8" fill="#fff" opacity=".8"/></g><g transform="translate(267 83) scale(.85)"><use href="#heartP" fill="none" stroke="#1a1000" stroke-width="4.4" stroke-linejoin="round"/><use href="#heartP" fill="none" stroke="url(#bezel)" stroke-width="2.8" stroke-linejoin="round"/><use href="#heartP" fill="url(#ruby)"/><path d="M0 -7 L0 9 C2 6 10 1 10 -4 C10 -8 7 -10 4.5 -10 C2.5 -10 .8 -8.8 0 -7 Z" fill="#000" opacity=".18"/><ellipse cx="-5.2" cy="-5.6" rx="2.6" ry="1.4" transform="rotate(-35 -5.2 -5.6)" fill="#fff" opacity=".75"/><use href="#sparkle" transform="translate(-2.5 -2) scale(.7)"/></g><g transform="translate(293 83) scale(.85)"><use href="#clubG" fill="none" stroke="#1a1000" stroke-width="4.4" stroke-linejoin="round"/><use href="#clubG" fill="none" stroke="url(#bezel)" stroke-width="2.8" stroke-linejoin="round"/><use href="#clubG" fill="url(#onyx)"/><ellipse cx="-1.6" cy="-7" rx="1.6" ry=".9" transform="rotate(-35 -1.6 -7)" fill="#fff" opacity=".7"/><ellipse cx="-6.8" cy="-.4" rx="1.6" ry=".9" transform="rotate(-35 -6.8 -.4)" fill="#fff" opacity=".6"/><ellipse cx="3.6" cy="-.4" rx="1.4" ry=".8" transform="rotate(-35 3.6 -.4)" fill="#fff" opacity=".45"/></g><use href="#diamondGem" transform="translate(319 83) scale(.85)"/></g>
+  <g filter="url(#shadow)"><text x="298" y="153" font-family="Tahoma,system-ui" font-size="48" font-weight="900" text-anchor="start" fill="url(#goldText)" stroke="#000" stroke-width="2" paint-order="stroke">تريكس</text><text x="264" y="151" font-family="Georgia,'Times New Roman',serif" font-size="48" font-weight="700" letter-spacing="5" text-anchor="end" fill="url(#goldText)" stroke="#000" stroke-width="2" paint-order="stroke">TRIX</text><rect x="278.5" y="116" width="3" height="40" rx="1.5" fill="url(#gold)" stroke="#000" stroke-width=".8"/><circle cx="280" cy="114" r="4" fill="url(#gold)" stroke="#000" stroke-width="1"/><circle cx="280" cy="158" r="4" fill="url(#gold)" stroke="#000" stroke-width="1"/></g>
+</svg>
+<p class="sub">أكلات - بنات - شايب - تركس - وديمن</p>
+<div class="score">
+<div class="team hna"><span>حنا 💚</span><b id="totalHna">0</b></div>
+<div class="team hum"><span>هم 🧡</span><b id="totalHum">0</b></div>
+</div>
+<button class="btn btn-green" onclick="openModal()">+ تسجيل جولة جديدة</button>
+<button class="btn btn-orange" onclick="undoLast()">↩️ تراجع عن آخر جولة</button>
+<div id="cycleInfo" style="text-align:center;font-size:13px;color:#94a3b8;margin-top:8px"></div>
+<div id="history" style="margin-top:14px"></div>
+<button class="btn btn-red" onclick="resetAll()">تصفير اللعبة كلها</button>
+</div>
+<div class="modal" id="modal"><div class="modal-box">
+<h3 style="margin:0">شنو اللعبة هالجولة؟ <span id="editLabel" style="font-size:13px;color:#f59e0b"></span></h3>
+<div class="games">
+<button id="g-aklat" onclick="pickGame('أكلات')">🍽️ أكلات</button>
+<button id="g-banat" onclick="pickGame('بنات')">♀️ بنات</button>
+<button id="g-shayeb" onclick="pickGame('شايب')">♥️ شايب</button>
+<button id="g-treks" onclick="pickGame('تركس')">👑 تركس</button>
+<button id="g-wd" onclick="pickGame('وديمن')">♦️ وديمن</button>
+</div>
+<div id="form-aklat" class="box hidden"><b>🍽️ أكلات - المجموع 13 بس</b><label id="labelAHna">جم أكلة أكلنا حنا؟</label><input id="aHna" type="number" min="0" max="13" placeholder="مثال: 9"><label id="labelAHum">جم أكلة أكلوا هم؟</label><input id="aHum" type="number" min="0" max="13" placeholder="مثال: 4"><small style="color:#94a3b8">كل أكلة = 15 | حنا + هم = 13</small></div>
+<div id="form-banat" class="box hidden"><b>♀️ بنات - المجموع 4 بس</b><label id="labelBHna">جم بنت أكلنا حنا؟</label><input id="bHna" type="number" min="0" max="4" value="0"><label id="labelBHnaYes">جم بنت منهم معلنة؟</label><input id="bHnaYes" type="number" min="0" max="4" value="0"><label id="labelBHum">جم بنت أكلوا هم؟</label><input id="bHum" type="number" min="0" max="4" value="0"><label id="labelBHumYes">جم بنت منهم معلنة؟</label><input id="bHumYes" type="number" min="0" max="4" value="0"><small style="color:#94a3b8">المعلنة 100 ، الغير معلنة 25 | مجموع البنات 4 ومجموع المعلنات 4</small></div>
+<div id="form-shayeb" class="box hidden"><b>♥️ شايب الهاص</b><label>معلن ولا مو معلن؟</label><select id="sM"><option value="no">مو معلن - المطقوق +75</option><option value="yes">معلن - المطقوق +150 والطاق -75</option></select><label>منو طق؟</label><div class="choice"><button id="sLana" onclick="setShayebSide('لنا')">لنا - حنا طقينا</button><button id="sLahum" onclick="setShayebSide('لهم')">لهم - هم طقونا</button></div></div>
+<div id="form-treks" class="box hidden"><b>👑 تركس</b><p style="font-size:13px;color:#94a3b8">بدون ولد: الأول -200 ، الثاني -150 ، الثالث -100 ، الرابع -50<br>مع ولد معلق: اللي طق الولد -400 مكان الأول</p><label>هل كان فيه ولد معلق؟</label><select id="tBoy"><option value="no">لا مافي</option><option value="yes">إيه فيه ولد معلق</option></select><div id="tBoyBox" class="hidden"><label>منو طق الولد المعلق؟</label><div class="choice"><button id="tbHna" onclick="setBoy('حنا')">حنا -400</button><button id="tbHum" onclick="setBoy('هم')">هم -400</button></div></div><div id="rk1Row" class="rank"><span>🥇 الأول -200</span><select id="rk1"><option value="حنا">حنا</option><option value="هم">هم</option></select></div><div class="rank"><span>🥈 الثاني -150</span><select id="rk2"><option value="حنا">حنا</option><option value="هم">هم</option></select></div><div class="rank"><span>🥉 الثالث -100</span><select id="rk3"><option value="حنا">حنا</option><option value="هم">هم</option></select></div><div class="rank"><span>4️⃣ الرابع -50</span><select id="rk4"><option value="حنا">حنا</option><option value="هم">هم</option></select></div></div>
+<div id="form-wd" class="box hidden"><b>♦️ وديمن - المجموع 13 بس</b><label id="labelWHna">جم ورقة وديمن أكلنا حنا؟</label><input id="wHna" type="number" min="0" max="13" value="0"><label id="labelWHum">جم ورقة وديمن أكلوا هم؟</label><input id="wHum" type="number" min="0" max="13" value="0"><small style="color:#94a3b8">كل ورقة = +10 | حنا + هم = 13</small></div>
+<div id="preview" style="background:#0f172a;padding:10px;border-radius:10px;margin-top:12px;font-size:14px;line-height:1.8">اختار اللعبة فوق</div>
+<button class="btn btn-green" id="saveBtn" onclick="saveRound()">حفظ الجولة ✅</button>
+<button class="btn btn-dark" onclick="closeModal()">إلغاء</button>
+</div></div>
+<script>
+let game='',shayebSide='',boyWho='';let totalHna=0,totalHum=0,rounds=[],used=[],editingIndex=-1;
+function openModal(){document.getElementById('modal').classList.add('open');updateGameButtons();updatePreview()}
+function closeModal(){document.getElementById('modal').classList.remove('open');editingIndex=-1;document.getElementById('editLabel').textContent='';document.getElementById('saveBtn').textContent='حفظ الجولة ✅';game='';pickGame('');}
+function updateGameButtons(){let map={'أكلات':'g-aklat','بنات':'g-banat','شايب':'g-shayeb','تركس':'g-treks','وديمن':'g-wd'};for(let k in map){document.getElementById(map[k]).classList.toggle('used', used.includes(k));}document.getElementById('cycleInfo').textContent = used.length===0 ? 'دورة جديدة - باقي 5 ألعاب' : used.length<5 ? 'لعبنا: '+used.join(' - ')+' | باقي: '+(5-used.length) : 'خلصت الدورة';}
+function pickGame(g){game=g;let map={'أكلات':['g-aklat','form-aklat'],'بنات':['g-banat','form-banat'],'شايب':['g-shayeb','form-shayeb'],'تركس':['g-treks','form-treks'],'وديمن':['g-wd','form-wd']};for(let k in map){document.getElementById(map[k][0]).className=k===g?'active':(used.includes(k)?'used':'');document.getElementById(map[k][1]).classList.toggle('hidden',k!==g);}updatePreview();}
+function setShayebSide(s){shayebSide=s;document.getElementById('sLana').className=s==='لنا'?'active':'';document.getElementById('sLahum').className=s==='لهم'?'active':'';updatePreview();}
+function setBoy(w){boyWho=w;document.getElementById('tbHna').className=w==='حنا'?'active':'';document.getElementById('tbHum').className=w==='هم'?'active':'';updatePreview();}
+document.getElementById('tBoy').addEventListener('change',e=>{let hasBoy=e.target.value==='yes';document.getElementById('tBoyBox').classList.toggle('hidden',!hasBoy);document.getElementById('rk1Row').style.display=hasBoy?'none':'flex';updatePreview();});
+function getVal(id){return Math.max(0, +document.getElementById(id).value||0);}
+function syncAklat(){let h=document.getElementById('aHna'), u=document.getElementById('aHum');let hv=getVal('aHna'), uv=getVal('aHum');if(hv>13-uv){h.value=13-uv;hv=13-uv;}if(uv>13-hv){u.value=13-hv;uv=13-hv;}h.max=13-uv; u.max=13-hv;document.getElementById('labelAHna').textContent=`جم أكلة أكلنا حنا؟ (تقدر لين ${13-uv})`;document.getElementById('labelAHum').textContent=`جم أكلة أكلوا هم؟ (يقدرون لين ${13-hv})`;}
+function syncWd(){let h=document.getElementById('wHna'), u=document.getElementById('wHum');let hv=getVal('wHna'), uv=getVal('wHum');if(hv>13-uv){h.value=13-uv;hv=13-uv;}if(uv>13-hv){u.value=13-hv;uv=13-hv;}h.max=13-uv; u.max=13-hv;document.getElementById('labelWHna').textContent=`جم ورقة وديمن أكلنا حنا؟ (تقدر لين ${13-uv})`;document.getElementById('labelWHum').textContent=`جم ورقة وديمن أكلوا هم؟ (يقدرون لين ${13-hv})`;}
+function syncBanat(){let h=document.getElementById('bHna'), hy=document.getElementById('bHnaYes'), u=document.getElementById('bHum'), uy=document.getElementById('bHumYes');let hv=getVal('bHna'), hyv=getVal('bHnaYes'), uv=getVal('bHum'), uyv=getVal('bHumYes');if(hv>4-uv){h.value=4-uv;hv=4-uv;}if(uv>4-hv){u.value=4-hv;uv=4-hv;}if(hyv>hv){hy.value=hv;hyv=hv;}if(uyv>uv){uy.value=uv;uyv=uv;}if(hyv>4-uyv){hy.value=4-uyv;hyv=4-uyv;}if(uyv>4-hyv){uy.value=4-hyv;uyv=4-hyv;}h.max=4-uv; u.max=4-hv;hy.max=Math.min(hv,4-uyv); uy.max=Math.min(uv,4-hyv);document.getElementById('labelBHna').textContent=`جم بنت أكلنا حنا؟ (تقدر لين ${4-uv})`;document.getElementById('labelBHum').textContent=`جم بنت أكلوا هم؟ (يقدرون لين ${4-hv})`;document.getElementById('labelBHnaYes').textContent=`جم بنت منهم معلنة؟ (تقدر لين ${Math.min(hv,4-uyv)})`;document.getElementById('labelBHumYes').textContent=`جم بنت منهم معلنة؟ (تقدر لين ${Math.min(uv,4-hyv)})`;}
+document.getElementById('aHna').addEventListener('input',()=>{syncAklat();updatePreview();});document.getElementById('aHum').addEventListener('input',()=>{syncAklat();updatePreview();});document.getElementById('wHna').addEventListener('input',()=>{syncWd();updatePreview();});document.getElementById('wHum').addEventListener('input',()=>{syncWd();updatePreview();});['bHna','bHnaYes','bHum','bHumYes'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{syncBanat();updatePreview();}));
+function calc(){let pH=0,pU=0,detail='';if(game==='أكلات'){let c1=getVal('aHna'), c2=getVal('aHum');pH=c1*15; pU=c2*15;detail=`أكلات: حنا ${c1} × 15 = ${pH} - هم ${c2} × 15 = ${pU} (المجموع ${c1+c2} / 13)`;}if(game==='بنات'){let gH=getVal('bHna'),gyH=getVal('bHnaYes'),gU=getVal('bHum'),gyU=getVal('bHumYes');gyH=Math.min(gyH,gH); gyU=Math.min(gyU,gU);pH=gyH*100+Math.max(0,gH-gyH)*25; pU=gyU*100+Math.max(0,gU-gyU)*25;detail=`بنات: حنا ${gH} (${gyH} معلنة) = ${pH} - هم ${gU} (${gyU} معلنة) = ${pU} (المجموع ${gH+gU} / 4)`;}if(game==='شايب'){let isM=document.getElementById('sM').value==='yes';if(!shayebSide){detail='اختار لنا ولا لهم';}else if(isM){if(shayebSide==='لنا'){pH=-75;pU=150;detail='شايب معلن - لنا: حنا -75 ، هم +150';}else{pH=150;pU=-75;detail='شايب معلن - لهم: حنا +150 ، هم -75';}}else{if(shayebSide==='لنا'){pU=75;detail='شايب مو معلن - لنا: هم +75';}else{pH=75;detail='شايب مو معلن - لهم: حنا +75';}}}if(game==='تركس'){let hasBoy=document.getElementById('tBoy').value==='yes';let r2=document.getElementById('rk2').value,r3=document.getElementById('rk3').value,r4=document.getElementById('rk4').value;pH=0;pU=0;if(hasBoy){if(!boyWho){detail='اختار منو طق الولد';}else{if(boyWho==='حنا')pH+=-400;else pU+=-400;if(r2==='حنا')pH+=-150;else pU+=-150;if(r3==='حنا')pH+=-100;else pU+=-100;if(r4==='حنا')pH+=-50;else pU+=-50;detail=`تركس + ولد معلق: ${boyWho} -400 ، الثاني ${r2} -150 ، الثالث ${r3} -100 ، الرابع ${r4} -50`;}}else{let r1=document.getElementById('rk1').value;if(r1==='حنا')pH+=-200;else pU+=-200;if(r2==='حنا')pH+=-150;else pU+=-150;if(r3==='حنا')pH+=-100;else pU+=-100;if(r4==='حنا')pH+=-50;else pU+=-50;detail=`تركس: الأول ${r1} -200 ، الثاني ${r2} -150 ، الثالث ${r3} -100 ، الرابع ${r4} -50`;}}if(game==='وديمن'){let wH=getVal('wHna'),wU=getVal('wHum');pH=wH*10;pU=wU*10;detail=`وديمن: حنا ${wH} = +${pH} - هم ${wU} = +${pU} (المجموع ${wH+wU} / 13)`;}return {pH,pU,detail};}
+function updatePreview(){if(!game){document.getElementById('preview').innerHTML='اختار اللعبة فوق';return;}let c=calc();document.getElementById('preview').innerHTML=`<b>${game}</b><br>${c.detail}<br>النتيجة: <b>حنا ${c.pH} - هم ${c.pU}</b>`;}
+document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',updatePreview));
+function recalcTotals(){totalHna=0;totalHum=0;rounds.forEach(r=>{totalHna+=r.pH;totalHum+=r.pU;r.tH=totalHna;r.tU=totalHum;});}
+function render(){recalcTotals();document.getElementById('totalHna').textContent=totalHna;document.getElementById('totalHum').textContent=totalHum;updateGameButtons();document.getElementById('history').innerHTML=rounds.map((r,i)=>`<div class="item"><span class="badge">جولة ${i+1} - ${r.game}</span><br>${r.detail}<br><b>حنا ${r.pH} - هم ${r.pU}</b> | المجموع: حنا ${r.tH} - هم ${r.tU}<br><button class="mini mini-edit" onclick="editRound(${i})">✏️ تعديل</button><button class="mini mini-del" onclick="deleteRound(${i})">🗑️ حذف</button></div>`).reverse().join('') || '<p style="color:#94a3b8;text-align:center">لا جولات بعد</p>';}
+function saveRound(){if(!game){alert('اختار اللعبة أول');return;}if(game==='أكلات' && getVal('aHna')+getVal('aHum')>13){alert('أكلات المجموع لازم 13');return;}if(game==='بنات' && getVal('bHna')+getVal('bHum')>4){alert('بنات المجموع لازم 4');return;}if(game==='بنات' && getVal('bHnaYes')+getVal('bHumYes')>4){alert('المعلنات المجموع لازم 4');return;}if(game==='وديمن' && getVal('wHna')+getVal('wHum')>13){alert('وديمن المجموع لازم 13');return;}if(game==='شايب'&&!shayebSide){alert('اختار لنا ولا لهم');return;}if(game==='تركس'&&document.getElementById('tBoy').value==='yes'&&!boyWho){alert('اختار منو طق الولد');return;}let c=calc();if(editingIndex>=0){let oldGame=rounds[editingIndex].game;used=used.filter(x=>x!==oldGame);rounds[editingIndex]={game,...c};if(!used.includes(game)) used.push(game);editingIndex=-1;}else{rounds.push({game,...c});if(!used.includes(game)) used.push(game);if(used.length===5){ used=[]; alert('خلصت الدورة! 🔄'); }}render(); closeModal();}
+function undoLast(){if(rounds.length===0){alert('مافي جولات');return;}let last=rounds.pop();used=used.filter(x=>x!==last.game);render();}
+function deleteRound(i){if(!confirm('تحذف هالجولة؟'))return;let g=rounds[i].game;rounds.splice(i,1);used=used.filter(x=>x!==g);render();}
+function editRound(i){editingIndex=i;let r=rounds[i];openModal();document.getElementById('editLabel').textContent='(تعديل جولة '+(i+1)+')';document.getElementById('saveBtn').textContent='حفظ التعديل ✅';pickGame(r.game);alert('عدل القيم الحين واضغط حفظ التعديل - اللعبة: '+r.game);}
+function resetAll(){if(confirm('تصفر كل شي؟')){totalHna=0;totalHum=0;rounds=[];used=[];render();}}
+render();
+</script>
+</body>
+</html>
